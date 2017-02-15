@@ -10,6 +10,9 @@ const char ADDR[] = "127.0.0.1";
 const int BUFFER_SIZE = 2048;
 const int timeout = 10000;
 
+// <summary>Start UDP Echo Client. This program can receive up to 2 arguments.</summary>
+// <argument name="address">Server's address</argument>
+// <argument name="port">Server's port</argument>
 int main(int argc, char* argv[])
 {
 	WSADATA wsa_data;
@@ -32,17 +35,32 @@ int main(int argc, char* argv[])
 	if (argc == 1)
 	{
 		server_addr.sin_port = htons((u_short) PORT);
-		inet_pton(AF_INET, ADDR, (void*) &(server_addr.sin_addr.s_addr));
+		if (inet_pton(AF_INET, ADDR, (void*) &(server_addr.sin_addr.s_addr)) != 1)
+		{
+			cerr << "Can not convert little-endian to big-endian" << endl;
+
+			return 1;
+		}
 	}
 	else if (argc == 2)
 	{
 		server_addr.sin_port = htons((u_short) PORT);
-		inet_pton(AF_INET, argv[1], (void*)  &(server_addr.sin_addr.s_addr));
+		if (inet_pton(AF_INET, argv[1], (void*)  &(server_addr.sin_addr.s_addr)) != 1)
+		{
+			cerr << "Can not convert little-endian to big-endian" << endl;
+
+			return 1;
+		}
 	}
 	else
 	{
 		server_addr.sin_port = htons((u_short) stoi(argv[2]));
-		inet_pton(AF_INET, argv[1], (void*) &(server_addr.sin_addr.s_addr));
+		if (inet_pton(AF_INET, argv[1], (void*) &(server_addr.sin_addr.s_addr)) != 1)
+		{
+			cerr << "Can not convert little-endian to big-endian" << endl;
+
+			return 1;
+		}
 	}
 
 	char buffer[BUFFER_SIZE];
